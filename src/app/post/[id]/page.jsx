@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
       title: singlePost.title,
       description: singlePost.body,
     }
-  }
+}
 
 const page = async ({params}) => {
     const p = await params;

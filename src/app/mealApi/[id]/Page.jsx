@@ -1,4 +1,8 @@
+
+
 const fetchSingleMeals = async (id) => {
+    console.log(id);
+    
     try {
         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
         const data = await res.json();
@@ -9,7 +13,22 @@ const fetchSingleMeals = async (id) => {
     }
 };
 
-const Page = async ({ params }) => {
+export async function generateMetadata({ params }) {
+    // read route params
+    const id = (await params).id
+   
+    // fetch data
+    const [singleMeal] = await fetchSingleMeals(id)
+    console.log(singleMeal);
+    
+   
+    return {
+      title: singleMeal.strMeal,
+      description: singleMeal.strInstructions,
+    }
+}
+
+const page = async ({ params }) => {
     if (!params?.id) {
         return <div>Error: No meal ID provided</div>;
     }
@@ -29,57 +48,4 @@ const Page = async ({ params }) => {
     );
 };
 
-export default Page;
-
-
-// export async function generateMetadata({ params }) {
-//     // read route params
-//     const id = (await params).id
-   
-//     // fetch data
-//     const singleMeal = await fetchSingleMeals(id)
-   
-//     return {
-//         title: singleMeal.strMeal,
-//         description: singleMeal.strInstructions,
-//     };
-// }
-
-
-// const fetchSingleMeals = async (id) => {
-//     try {
-//         const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-//         console.log("Meal ID:", id);
-//         const data = await res.json();
-//         return data.meals || []; // যদি meals না থাকে, খালি অ্যারে রিটার্ন করো
-//     } catch (error) {
-//         console.error("Error fetching meal:", error);
-//         return [];
-//     }
-// };
-
-// export async function generateMetadata({ params }) {
-//     const id = params.id;
-//     const singleMeal = await fetchSingleMeals(id);
-    
-//     return {
-//         title: singleMeal?.[0]?.strMeal || "Meal Not Found",
-//         description: singleMeal?.[0]?.strInstructions || "No description available",
-//     };
-// }
-
-// const Page = async ({ params }) => {
-//     const singleMeal = await fetchSingleMeals(params?.id);
-
-//     return (
-//         <div>
-//             {singleMeal.length > 0 ? (
-//                 <p>{JSON.stringify(singleMeal[0], null, 2)}</p>
-//             ) : (
-//                 <p>No Data Found</p>
-//             )}
-//         </div>
-//     );
-// };
-
-// export default Page;
+export default page;
